@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="GadgetX Africa. Explore a seleção de iPhone e prepare a sua encomenda.">
+  <meta name="theme-color" content="#f5f5f7">
+  <title>GadgetX Africa — O teu próximo iPhone.</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- data.js tem o conteúdo editável (catálogo, contactos, políticas); app.js tem a lógica. -->
+  <script src="js/data.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar para o conteúdo</a>
+
+  <div class="entry-loader" aria-hidden="true">
+    <div class="entry-word">Hello<span>.</span></div>
+    <p>GADGETX AFRICA</p>
+  </div>
+  <div class="page-curtain" aria-hidden="true">
+    <div class="curtain-panel"><span>GADGETX<span class="curtain-dot">.</span></span></div>
+  </div>
+
+  <div class="preview">PRÉ-VISUALIZAÇÃO <span>Catálogo em preparação · pagamentos desativados</span></div>
+
+  <header>
+    <div class="nav-shell">
+      <a href="#main" class="brand" aria-label="GadgetX Africa, início">
+        <img src="assets/logo-dark.png" alt="GadgetX — Apple Premium Partner">
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#catalogo" data-filter="18">iPhone 18</a>
+        <a href="#catalogo" data-filter="17">iPhone 17</a>
+        <a href="#catalogo" data-filter="16">iPhone 16</a>
+        <a href="#entregas">Entregas</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="bag-btn" id="open-bag" aria-label="Abrir carrinho">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+          <span id="bag-count">0</span>
+        </button>
+        <button class="menu-toggle magnetic" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-menu"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="site-menu" id="site-menu" inert aria-hidden="true">
+    <div class="site-menu-inner">
+      <p class="eyebrow">NAVEGAÇÃO</p>
+      <a href="#main" class="menu-link"><span>Início</span><span>01</span></a>
+      <a href="#catalogo" data-filter="18" class="menu-link"><span>iPhone 18</span><span>02</span></a>
+      <a href="#catalogo" data-filter="17" class="menu-link"><span>iPhone 17</span><span>03</span></a>
+      <a href="#catalogo" data-filter="16" class="menu-link"><span>iPhone 16</span><span>04</span></a>
+      <a href="#entregas" class="menu-link"><span>Entregas</span><span>05</span></a>
+      <p class="menu-bottom">GadgetX Africa <span>Apple. Mais perto de ti.</span></p>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="intro shell">
+      <div>
+        <p class="eyebrow">GADGETX AFRICA</p>
+        <h1>Loja. <span>O teu universo Apple.</span></h1>
+      </div>
+      <a class="intro-support" href="https://wa.me/message/4E732CRQ5TRSF1" data-whatsapp target="_blank" rel="noopener noreferrer">Precisas de ajuda para escolher?<strong>Fala connosco ↗</strong></a>
+    </section>
+
+    <nav class="category-nav shell" aria-label="Categorias">
+      <a href="#catalogo"><img src="assets/iphone-family.webp" alt="" width="120" height="90"><span>iPhone</span></a>
+      <a href="#audio"><img src="assets/airpods-pro.jpeg" alt="" width="120" height="90"><span>AirPods</span></a>
+      <a href="#universo"><img src="assets/watch.png" alt="" width="120" height="90"><span>Apple Watch</span></a>
+      <a href="#acessorios"><img src="assets/accessories.png" alt="" width="120" height="90"><span>Acessórios</span></a>
+      <a href="#universo"><img src="assets/appletv.png" alt="" width="120" height="90"><span>Casa e TV</span></a>
+    </nav>
+
+    <!-- Hero com zoom ligado ao scroll (ver "Hero" em js/app.js). -->
+    <section class="hero-scroll shell" id="experiencia" aria-labelledby="hero-title">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">EM DESTAQUE</p>
+          <h2 id="hero-title">iPhone 18 Pro.</h2>
+          <p class="hero-line">O próximo capítulo <br>é teu.</p>
+          <p class="hero-desc">Descobre a família Pro.<br>Escolhe o teu próximo iPhone.</p>
+          <button class="button light" data-product="18pro">Explorar os modelos <span aria-hidden="true">↗</span></button>
+          <p class="hero-meta">Pro e Pro Max · Preços a anunciar</p>
+        </div>
+        <div class="hero-media">
+          <img class="hero-phone" src="assets/iphone18-pro-detail.webp" alt="Detalhe das câmaras do iPhone 18 Pro em borgonha" fetchpriority="high" width="800" height="1000">
+        </div>
+        <span class="hero-counter" aria-hidden="true">01 / 03</span>
+      </div>
+    </section>
+
+    <section class="catalog shell" id="catalogo">
+      <div class="section-heading">
+        <h2>iPhone. <span>Escolhe a tua geração.</span></h2>
+        <p>Do 16 à família 18.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filtrar por geração">
+        <button data-filter="all" class="active" aria-pressed="true">Todos</button>
+        <button data-filter="18" aria-pressed="false">iPhone 18</button>
+        <button data-filter="17" aria-pressed="false">iPhone 17</button>
+        <button data-filter="16" aria-pressed="false">iPhone 16</button>
+      </div>
+      <!-- Preenchido por js/app.js a partir de STORE.families em js/data.js -->
+      <div id="products" class="product-grid"></div>
+      <p class="catalog-note">A seleção final, as variantes e a disponibilidade serão confirmadas antes da abertura das vendas.</p>
+    </section>
+
+    <!-- Os cartões de cada secção vêm de STORE.shop em js/data.js (chave = data-shop). -->
+    <section class="shop-section shell" id="audio">
+      <div class="section-heading"><h2>Som. <span>À tua maneira.</span></h2></div>
+      <div class="shop-grid" data-shop="audio"></div>
+    </section>
+
+    <section class="shop-section shell" id="acessorios">
+      <div class="section-heading"><h2>Os detalhes. <span>Fazem a diferença.</span></h2></div>
+      <div class="shop-grid" data-shop="acessorios"></div>
+    </section>
+
+    <section class="shop-section shell" id="universo">
+      <div class="section-heading"><h2>Mais Apple. <span>Mais possibilidades.</span></h2></div>
+      <div class="shop-grid" data-shop="universo"></div>
+    </section>
+
+    <section class="delivery shell" id="entregas">
+      <div>
+        <p class="eyebrow">DA ÁFRICA DO SUL ATÉ TI</p>
+        <h2>Mais perto.<br>Onde estiveres.</h2>
+        <p>Estamos a preparar a GadgetX para receber encomendas de clientes em toda a África.</p>
+        <a href="#" class="text-link" data-policy="entregas">Como funcionam as entregas <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="delivery-steps">
+        <article><span>01</span><div><h3>Escolhe o teu iPhone</h3><p>Seleciona o modelo e indica as tuas preferências.</p></div></article>
+        <article><span>02</span><div><h3>Indica a morada</h3><p>País, cidade e os detalhes para a entrega à porta.</p></div></article>
+        <article><span>03</span><div><h3>Revê antes de pagar</h3><p>Preço, transporte e condições de entrega apresentados antes da confirmação.</p></div></article>
+      </div>
+    </section>
+
+    <section class="help shell">
+      <div>
+        <p class="eyebrow">ESTAMOS POR PERTO</p>
+        <h2>Uma dúvida antes de escolher?</h2>
+        <p>Fala com a GadgetX pelo WhatsApp.</p>
+      </div>
+      <a class="button dark" href="https://wa.me/message/4E732CRQ5TRSF1" data-whatsapp target="_blank" rel="noopener noreferrer">Falar com a GadgetX <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-grid">
+      <div>
+        <strong>GADGETX</strong>
+        <p>Apple. Mais perto de ti.</p>
+        <a href="https://www.instagram.com/gadgetxafrica/" data-instagram target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+      </div>
+      <div>
+        <h3>Explorar</h3>
+        <a href="#catalogo" data-filter="18">iPhone 18</a>
+        <a href="#catalogo" data-filter="17">iPhone 17</a>
+        <a href="#catalogo" data-filter="16">iPhone 16</a>
+      </div>
+      <div>
+        <h3>Informações</h3>
+        <a href="#" data-policy="entregas">Entregas</a>
+        <a href="#" data-policy="devolucoes">Devoluções e garantia</a>
+        <a href="#" data-policy="privacidade">Privacidade</a>
+        <a href="#" data-policy="termos">Termos de compra</a>
+      </div>
+    </div>
+    <div class="shell footer-bottom">
+      <span>© <span id="year">2026</span> GadgetX Africa.</span>
+      <span>Versão de demonstração · Não aceita encomendas nem pagamentos.</span>
+    </div>
+  </footer>
+
+  <dialog id="product-dialog" aria-labelledby="product-title">
+    <button class="close" data-close aria-label="Fechar detalhes">×</button>
+    <div id="product-detail"></div>
+  </dialog>
+
+  <dialog id="bag-dialog" aria-labelledby="bag-title">
+    <button class="close" data-close aria-label="Fechar carrinho">×</button>
+    <p class="eyebrow">GADGETX AFRICA</p>
+    <h2 id="bag-title">O teu carrinho.</h2>
+    <div id="bag-items"></div>
+    <div id="bag-summary"></div>
+  </dialog>
+
+  <dialog id="checkout-dialog" aria-labelledby="checkout-title">
+    <button class="close" data-close aria-label="Fechar checkout">×</button>
+    <p class="eyebrow">CHECKOUT DE DEMONSTRAÇÃO</p>
+    <h2 id="checkout-title">Onde vamos entregar?</h2>
+    <p class="muted">Usa dados fictícios para experimentar. Esta versão não envia nem guarda os teus dados de entrega.</p>
+    <ol class="checkout-progress"><li class="current">1. Entrega</li><li>2. Revisão</li><li>3. Pagamento</li></ol>
+    <form id="shipping-form">
+      <div class="form-grid">
+        <label>Nome completo<input name="name" autocomplete="name" required minlength="2" maxlength="100"></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required maxlength="150"></label>
+        <label>Telefone com indicativo<input name="phone" type="tel" autocomplete="tel" placeholder="+258 84 000 0000" pattern="[+0-9 ()-]{7,25}" required maxlength="25"></label>
+        <label>País<select name="country" autocomplete="country-name" required id="country"><option value="">Seleciona o país</option></select></label>
+        <label>Província / região<input name="region" autocomplete="address-level1" required maxlength="100"></label>
+        <label>Cidade<input name="city" autocomplete="address-level2" required maxlength="100"></label>
+        <label class="wide">Morada e número da porta<input name="address" autocomplete="address-line1" required minlength="4" maxlength="200"></label>
+        <label>Código postal <span>(se aplicável)</span><input name="postcode" autocomplete="postal-code" maxlength="20"></label>
+        <label>Referência <span>(opcional)</span><input name="reference" maxlength="200" placeholder="Edifício, andar ou ponto de referência"></label>
+      </div>
+      <p class="notice">Os portes, prazos e eventuais encargos de importação ainda estão por definir. Nenhum valor será cobrado.</p>
+      <button class="button dark" type="submit">Rever encomenda <span aria-hidden="true">→</span></button>
+    </form>
+    <div id="review" hidden></div>
+  </dialog>
+
+  <dialog id="policy-dialog" aria-labelledby="policy-title">
+    <button class="close" data-close aria-label="Fechar informações">×</button>
+    <p class="eyebrow">INFORMAÇÕES DA LOJA · RASCUNHO</p>
+    <h2 id="policy-title"></h2>
+    <div id="policy-body" class="policy-body"></div>
+  </dialog>
+
+  <div class="hover-cursor" aria-hidden="true">Ver ↗</div>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

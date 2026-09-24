@@ -1,0 +1,528 @@
+'use strict';
+/*
+ * Lógica da loja GadgetX Africa. O conteúdo (catálogo, textos, contactos) vem de
+ * STORE em js/data.js, que é carregado antes deste ficheiro.
+ */
+
+const $ = selector => document.querySelector(selector);
+const $$ = (selector, scope = document) => scope.querySelectorAll(selector);
+
+// Escapa texto vindo de data.js antes de o inserir como HTML.
+const esc = value => String(value).replace(/[&<>"']/g, ch => (
+  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+));
+
+const findIphone = id => STORE.iphones.find(p => p.id === id);
+const familyOf = gen => STORE.families.find(f => f.gen === gen);
+const MAX_QTY = STORE.maxQtyPerItem;
+const CART_KEY = 'gadgetx-cart';
+
+/* ---------- Contactos e conteúdo estático ---------- */
+
+$$('[data-whatsapp]').forEach(a => { a.href = STORE.contact.whatsapp; });
+$$('[data-instagram]').forEach(a => { a.href = STORE.contact.instagram; });
+$('#year').textContent = new Date().getFullYear();
+
+STORE.countries.forEach(country => {
+  const option = document.createElement('option');
+  option.value = country;
+  option.textContent = country;
+  $('#country').append(option);
+});
+
+function renderShop() {
+  $$('[data-shop]').forEach(grid => {
+    const items = STORE.shop[grid.dataset.shop] || [];
+    grid.innerHTML = items.map(item => `
+      <article class="shop-card">
+        <div class="shop-image"><img src="${esc(item.image)}" alt="${esc(item.alt || item.name)}" width="400" height="400" loading="lazy"></div>
+        <p class="eyebrow">${esc(item.eyebrow)}</p>
+        <h3>${esc(item.name)}</h3>
+        <a href="${esc(STORE.contact.whatsapp)}" target="_blank" rel="noopener noreferrer" class="shop-enquire">Consultar disponibilidade <span aria-hidden="true">↗</span></a>
+      </article>`).join('');
+  });
+}
+
+/* ---------- Carrinho (guardado no navegador) ---------- */
+
+let cart = [];
+try {
+  const raw = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+  if (Array.isArray(raw)) {
+    cart = raw
+      .filter(x => x && findIphone(x.id)?.sizes.includes(x.size) && Number.isInteger(x.qty) && x.qty > 0 && x.qty <= MAX_QTY)
+      .map(x => ({ id: x.id, size: x.size, qty: x.qty }))
+      .slice(0, 20);
+  }
+} catch { /* armazenamento indisponível: começa vazio */ }
+
+function saveCart() {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch { /* ignora */ }
+  $('#bag-count').textContent = cart.reduce((n, x) => n + x.qty, 0);
+}
+
+function addToCart(id, size) {
+  const item = cart.find(x => x.id === id && x.size === size);
+  if (item && item.qty >= MAX_QTY) {
+    toast(`Máximo de ${MAX_QTY} unidades por variante nesta demonstração.`);
+    return false;
+  }
+  if (item) item.qty++;
+  else cart.push({ id, size, qty: 1 });
+  saveCart();
+  return true;
+}
+
+function renderBag() {
+  if (!cart.length) {
+    $('#bag-items').innerHTML = '<p class="empty-bag">O teu carrinho está vazio.<br>Explora o catálogo e escolhe o teu iPhone.</p>';
+    $('#bag-summary').innerHTML = '<button class="button dark" data-close>Explorar catálogo →</button>';
+    return;
+  }
+  $('#bag-items').innerHTML = cart.map((x, i) => {
+    const p = findIphone(x.id);
+    return `
+      <article class="bag-line">
+        <div>
+          <h3>${esc(p.name)}</h3>
+          <p>${esc(x.size)} · Preço por confirmar</p>
+          <button class="remove" data-remove="${i}">Remover</button>
+        </div>
+        <div class="quantity">
+          <button data-qty="${i}" data-delta="-1" aria-label="Diminuir quantidade de ${esc(p.name)}" ${x.qty <= 1 ? 'disabled' : ''}>−</button>
+          <span>${x.qty}</span>
+          <button data-qty="${i}" data-delta="1" aria-label="Aumentar quantidade de ${esc(p.name)}" ${x.qty >= MAX_QTY ? 'disabled' : ''}>+</button>
+        </div>
+      </article>`;
+  }).join('');
+  $('#bag-summary').innerHTML = `
+    <p class="notice">Subtotal e portes por confirmar. Podes experimentar o formulário de entrega sem efetuar uma compra.</p>
+    <button class="button dark" id="start-checkout">Continuar para entrega →</button>`;
+  $('#start-checkout').onclick = () => {
+    showCheckoutStep(0);
+    openModal('#checkout-dialog');
+  };
+}
+
+/* ---------- Diálogos e avisos ---------- */
+
+let toastTimer;
+function toast(message) {
+  const el = $('#toast');
+  el.textContent = message;
+  el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('visible'), 2800);
+}
+
+function openModal(selector) {
+  $$('dialog[open]').forEach(d => d.close());
+  $(selector).showModal();
+}
+
+function showPolicy(key) {
+  const policy = STORE.policies[key];
+  if (!policy) return;
+  $('#policy-title').textContent = policy.title;
+  $('#policy-body').innerHTML = policy.body;
+  openModal('#policy-dialog');
+}
+
+/* ---------- Catálogo ---------- */
+
+function renderProducts(gen = 'all') {
+  $$('.filters button').forEach(b => {
+    const on = b.dataset.filter === gen;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  $('#products').innerHTML = STORE.families
+    .filter(f => gen === 'all' || f.gen === gen)
+    .map(f => `
+      <article class="product-card ${f.featured ? 'featured' : ''}">
+        <p class="generation">${esc(f.label)}</p>
+        <button type="button" data-product="${esc(f.lead)}" aria-label="Explorar a família iPhone ${esc(f.gen)}" class="product-visual gen-${esc(f.gen)}">
+          <img loading="lazy" src="${esc(f.image)}" alt="Imagem da família iPhone ${esc(f.gen)}">
+        </button>
+        <h3>${esc(f.title)}</h3>
+        <p class="product-sub">${esc(f.sub)}</p>
+        <div class="product-bottom">
+          <p>Preço por confirmar</p>
+          <button class="model-button" data-product="${esc(f.lead)}">Ver modelos <span aria-hidden="true">↗</span></button>
+        </div>
+      </article>`)
+    .join('');
+}
+
+function showProduct(id) {
+  const p = findIphone(id);
+  if (!p) return;
+  const detail = $('#product-detail');
+  const models = STORE.iphones.filter(x => x.gen === p.gen);
+  detail.innerHTML = `
+    <p class="eyebrow">IPHONE · GERAÇÃO ${esc(p.gen)}</p>
+    <h2 id="product-title">${esc(p.name)}</h2>
+    <p class="muted">${esc(p.sub)}</p>
+    <img class="detail-photo" src="${esc(familyOf(p.gen)?.image || '')}" alt="Imagem ilustrativa da família iPhone ${esc(p.gen)}">
+    <label class="detail-label" for="model-choice">Modelo</label>
+    <select id="model-choice">
+      ${models.map(x => `<option value="${esc(x.id)}" ${x.id === p.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
+    </select>
+    <span class="detail-label">Capacidade pretendida</span>
+    <div class="option-row" role="group" aria-label="Escolher capacidade">
+      ${p.sizes.map((s, i) => `<button data-size="${esc(s)}" class="${i === 0 ? 'selected' : ''}" aria-pressed="${i === 0}">${esc(s)}</button>`).join('')}
+    </div>
+    <p class="notice">Preço, cores e stock por confirmar. A seleção de capacidade nesta demonstração representa uma preferência e não uma reserva de stock.</p>
+    <div class="detail-actions">
+      <button class="button dark" id="add-cart">Adicionar ao carrinho <span aria-hidden="true">+</span></button>
+      <a href="${esc(STORE.contact.whatsapp)}" target="_blank" rel="noopener noreferrer">Tirar uma dúvida ↗</a>
+    </div>`;
+
+  let selected = p.sizes[0];
+  $('#model-choice').onchange = e => showProduct(e.target.value);
+  $$('[data-size]', detail).forEach(b => b.addEventListener('click', () => {
+    selected = b.dataset.size;
+    $$('[data-size]', detail).forEach(x => {
+      x.classList.toggle('selected', x === b);
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+  }));
+  $('#add-cart').onclick = () => {
+    if (!addToCart(p.id, selected)) return;
+    $('#product-dialog').close();
+    toast(`${p.name} adicionado ao carrinho`);
+  };
+
+  if ($('#product-dialog').open) $('#model-choice').focus({ preventScroll: true });
+  else openModal('#product-dialog');
+}
+
+/* ---------- Checkout de demonstração ---------- */
+
+function showCheckoutStep(step) {
+  $('#shipping-form').hidden = step !== 0;
+  $('#review').hidden = step !== 1;
+  $$('.checkout-progress li').forEach((li, i) => li.classList.toggle('current', i === step));
+}
+
+$('#shipping-form').addEventListener('submit', e => {
+  e.preventDefault();
+  if (!cart.length) {
+    renderBag();
+    openModal('#bag-dialog');
+    return;
+  }
+  if (!e.target.reportValidity()) return;
+  const d = Object.fromEntries(new FormData(e.target));
+  const review = $('#review');
+  showCheckoutStep(1);
+  review.replaceChildren();
+
+  const add = (tag, className, text) => {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text) el.textContent = text;
+    review.append(el);
+    return el;
+  };
+
+  add('h3', '', 'Confirma os detalhes.');
+  cart.forEach(x => {
+    const row = add('div', 'review-row');
+    const model = document.createElement('span');
+    const qty = document.createElement('span');
+    model.textContent = `${findIphone(x.id).name} · ${x.size}`;
+    qty.textContent = `× ${x.qty}`;
+    row.append(model, qty);
+  });
+  add('p', 'review-address', [
+    d.name,
+    d.address,
+    [d.city, d.region, d.postcode].filter(Boolean).join(', '),
+    d.country,
+    d.phone,
+    d.email,
+    d.reference
+  ].filter(Boolean).join('\n'));
+
+  const edit = add('button', 'edit-link', 'Editar dados de entrega');
+  edit.type = 'button';
+  edit.onclick = () => showCheckoutStep(0);
+
+  add('p', 'notice', 'Demonstração concluída. Estes dados não foram enviados. O pagamento será disponibilizado depois de confirmados os preços, portes, stock e prestador. Nenhuma encomenda foi criada.');
+  const pay = add('button', 'button dark', 'Pagamento ainda indisponível');
+  pay.disabled = true;
+  $('#checkout-dialog').scrollTop = 0;
+});
+
+/* ---------- Cliques delegados ---------- */
+
+$('#open-bag').onclick = () => {
+  renderBag();
+  openModal('#bag-dialog');
+};
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-close],[data-filter],[data-product],[data-policy],[data-remove],[data-qty]');
+  if (!b) return;
+  if (b.hasAttribute('data-close')) {
+    b.closest('dialog').close();
+  } else if (b.dataset.filter) {
+    renderProducts(b.dataset.filter);
+  } else if (b.dataset.product) {
+    showProduct(b.dataset.product);
+  } else if (b.dataset.policy) {
+    e.preventDefault();
+    showPolicy(b.dataset.policy);
+  } else if (b.dataset.remove !== undefined) {
+    cart.splice(Number(b.dataset.remove), 1);
+    saveCart();
+    renderBag();
+  } else if (b.dataset.qty !== undefined) {
+    const item = cart[Number(b.dataset.qty)];
+    if (item) item.qty = Math.min(MAX_QTY, Math.max(1, item.qty + Number(b.dataset.delta)));
+    saveCart();
+    renderBag();
+  }
+});
+
+renderShop();
+renderProducts();
+saveCart();
+
+/* ---------- Movimento ----------
+ * Tudo usa apenas transform e opacity; a loja continua utilizável sem estas animações.
+ */
+
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const finePointer = window.matchMedia('(hover:hover) and (pointer:fine)');
+
+// Menu em cortina
+const menu = $('#site-menu');
+const menuButton = $('#menu-toggle');
+const curtain = $('.page-curtain');
+let curtainBusy = false;
+let curtainTimer;
+
+function setMenu(open) {
+  menu.classList.toggle('open', open);
+  menu.inert = !open;
+  menu.setAttribute('aria-hidden', String(!open));
+  menuButton.setAttribute('aria-expanded', String(open));
+  menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  document.body.classList.toggle('menu-open', open);
+}
+
+menuButton.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+
+document.addEventListener('keydown', e => {
+  if (!menu.classList.contains('open')) return;
+  if (e.key === 'Escape') {
+    setMenu(false);
+    menuButton.focus();
+    return;
+  }
+  // Mantém o foco do teclado dentro do menu aberto, incluindo o botão de fechar.
+  if (e.key !== 'Tab') return;
+  const links = [menuButton, ...menu.querySelectorAll('a')];
+  const index = links.indexOf(document.activeElement);
+  if (e.shiftKey && index <= 0) {
+    e.preventDefault();
+    links.at(-1).focus();
+  } else if (!e.shiftKey && (index < 0 || index === links.length - 1)) {
+    e.preventDefault();
+    menuButton.focus();
+  }
+});
+
+// Links internos (#secção) passam pela transição de cortina.
+function navigateWithCurtain(anchor) {
+  const destination = anchor.getAttribute('href');
+  const target = document.querySelector(destination);
+  if (!target) return;
+
+  const change = () => {
+    if (anchor.dataset.filter) renderProducts(anchor.dataset.filter);
+    setMenu(false);
+    history.replaceState(null, '', destination);
+    const html = document.documentElement;
+    html.style.scrollBehavior = 'auto';
+    target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    html.style.scrollBehavior = '';
+    const heading = target.querySelector('h2') || target;
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: true });
+  };
+
+  if (reducedMotion.matches) { change(); return; }
+  if (curtainBusy) return;
+  curtainBusy = true;
+  curtain.classList.remove('reveal');
+  curtain.classList.add('active');
+  requestAnimationFrame(() => requestAnimationFrame(() => curtain.classList.add('cover')));
+  clearTimeout(curtainTimer);
+  curtainTimer = setTimeout(() => {
+    change();
+    curtain.classList.add('reveal');
+    curtain.classList.remove('cover');
+    curtainTimer = setTimeout(() => {
+      curtain.classList.remove('active', 'reveal');
+      curtainBusy = false;
+    }, 760);
+  }, 680);
+}
+
+document.addEventListener('click', e => {
+  const anchor = e.target.closest('a[href^="#"]');
+  if (!anchor || anchor.hasAttribute('data-policy') || anchor.classList.contains('skip')) return;
+  const href = anchor.getAttribute('href');
+  if (!href || href === '#' || !document.querySelector(href)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  navigateWithCurtain(anchor);
+}, true);
+
+window.addEventListener('pageshow', () => {
+  curtain.classList.remove('active', 'cover', 'reveal');
+  curtainBusy = false;
+});
+
+// Revelação dos cartões ao entrar no ecrã
+const revealObserver = 'IntersectionObserver' in window && !reducedMotion.matches
+  ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' })
+  : null;
+
+function registerReveals(scope = document) {
+  if (!revealObserver) return;
+  $$('.section-heading, .delivery-steps article, .help, .product-card, .shop-card', scope).forEach((el, i) => {
+    if (el.classList.contains('reveal-item')) return;
+    el.style.setProperty('--reveal-delay', Math.min(i % 4, 3) * 65 + 'ms');
+    el.classList.add('reveal-item');
+    revealObserver.observe(el);
+  });
+}
+registerReveals();
+const productGrid = $('#products');
+new MutationObserver(() => registerReveals(productGrid)).observe(productGrid, { childList: true });
+
+// Hero: o progresso do scroll (0–1) controla o zoom da imagem.
+// Uma futura sequência de fotogramas pode usar o mesmo valor de progresso.
+const heroScroll = $('.hero-scroll');
+const hero = $('.hero');
+const heroCounter = $('.hero-counter');
+let heroFrame = 0;
+let heroProgress = 0;
+let heroTarget = 0;
+
+function paintHero() {
+  heroFrame = 0;
+  if (reducedMotion.matches) return;
+  heroProgress += (heroTarget - heroProgress) * 0.12;
+  if (Math.abs(heroTarget - heroProgress) < 0.0005) heroProgress = heroTarget;
+  const p = heroProgress;
+  hero.style.setProperty('--story-scale', (0.88 + p * 0.24).toFixed(4));
+  heroCounter.textContent = String(Math.min(3, 1 + Math.floor(p * 3))).padStart(2, '0') + ' / 03';
+  if (p !== heroTarget) heroFrame = requestAnimationFrame(paintHero);
+}
+
+function requestHero() {
+  const top = parseFloat(getComputedStyle(hero).top) || 0;
+  const travel = Math.max(1, heroScroll.offsetHeight - hero.offsetHeight);
+  heroTarget = Math.max(0, Math.min(1, (top - heroScroll.getBoundingClientRect().top) / travel));
+  if (!heroFrame) heroFrame = requestAnimationFrame(paintHero);
+}
+window.addEventListener('scroll', requestHero, { passive: true });
+window.addEventListener('resize', requestHero, { passive: true });
+requestHero();
+
+// Botões "magnéticos" que seguem ligeiramente o ponteiro
+if (finePointer.matches) {
+  let activeMagnet = null;
+  let magnetBox = null;
+  let pointerFrame = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+  const resetMagnet = el => {
+    el.style.setProperty('--mag-x', '0px');
+    el.style.setProperty('--mag-y', '0px');
+  };
+
+  document.addEventListener('pointerover', e => {
+    const el = e.target.closest('.button, .menu-toggle');
+    if (el === activeMagnet) return;
+    if (activeMagnet) resetMagnet(activeMagnet);
+    activeMagnet = el;
+    magnetBox = el ? el.getBoundingClientRect() : null;
+    if (el) el.classList.add('magnetic');
+  });
+
+  document.addEventListener('pointermove', e => {
+    if (reducedMotion.matches || !activeMagnet) return;
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+    if (pointerFrame) return;
+    pointerFrame = requestAnimationFrame(() => {
+      pointerFrame = 0;
+      if (!activeMagnet || !magnetBox) return;
+      const x = (pointerX - magnetBox.left - magnetBox.width / 2) * 0.12;
+      const y = (pointerY - magnetBox.top - magnetBox.height / 2) * 0.12;
+      activeMagnet.style.setProperty('--mag-x', Math.max(-9, Math.min(9, x)) + 'px');
+      activeMagnet.style.setProperty('--mag-y', Math.max(-7, Math.min(7, y)) + 'px');
+    });
+  }, { passive: true });
+
+  document.addEventListener('pointerout', e => {
+    if (!activeMagnet || activeMagnet.contains(e.relatedTarget)) return;
+    resetMagnet(activeMagnet);
+    activeMagnet = null;
+  });
+}
+
+// Cursor "Ver ↗" sobre as imagens do catálogo
+if (finePointer.matches && !reducedMotion.matches) {
+  const hoverCursor = $('.hover-cursor');
+  document.addEventListener('pointermove', e => {
+    const card = e.target.closest('.product-visual');
+    hoverCursor.classList.toggle('visible', Boolean(card));
+    if (!card) return;
+    hoverCursor.style.setProperty('--cursor-x', (e.clientX - 29) + 'px');
+    hoverCursor.style.setProperty('--cursor-y', (e.clientY - 29) + 'px');
+  }, { passive: true });
+}
+
+// Saudação multilingue: só numa visita nova, nunca ao voltar com o botão "atrás".
+const entry = $('.entry-loader');
+const cameBack = performance.getEntriesByType('navigation').some(n => n.type === 'back_forward');
+if (!reducedMotion.matches && !cameBack) {
+  const words = ['Hello.', 'Bonjour.', 'Olá.', 'Ciao.', 'Hallo.'];
+  const word = entry.querySelector('.entry-word');
+  let index = 0;
+  entry.classList.add('playing');
+  const cycle = setInterval(() => {
+    index++;
+    if (index < words.length) {
+      word.textContent = words[index];
+      return;
+    }
+    clearInterval(cycle);
+    entry.classList.add('exit');
+    setTimeout(() => {
+      entry.classList.remove('playing', 'exit');
+      document.body.classList.add('entry-complete');
+    }, 700);
+  }, 285);
+}
+
+reducedMotion.addEventListener('change', () => {
+  if (!reducedMotion.matches) return;
+  $$('.reveal-item').forEach(el => el.classList.add('in-view'));
+  entry.classList.remove('playing', 'exit');
+  cancelAnimationFrame(heroFrame);
+  heroFrame = 0;
+});
