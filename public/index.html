@@ -10,8 +10,9 @@
   <!-- data.js tem o conteúdo editável (catálogo, contactos, políticas); app.js tem a lógica. -->
   <script src="js/data.js" defer></script>
   <script src="js/app.js" defer></script>
+  <script src="js/camera-story.js" defer></script>
 </head>
-<body>
+<body class="camera-view">
   <a class="skip" href="#main">Saltar para o conteúdo</a>
 
   <div class="entry-loader" aria-hidden="true">
@@ -22,7 +23,6 @@
     <div class="curtain-panel"><span>GADGETX<span class="curtain-dot">.</span></span></div>
   </div>
 
-  <div class="preview">PRÉ-VISUALIZAÇÃO <span>Catálogo em preparação · pagamentos desativados</span></div>
 
   <header>
     <div class="nav-shell">
@@ -33,6 +33,7 @@
         <a href="#catalogo" data-filter="18">iPhone 18</a>
         <a href="#catalogo" data-filter="17">iPhone 17</a>
         <a href="#catalogo" data-filter="16">iPhone 16</a>
+        <a href="#novidades">Novidades</a>
         <a href="#entregas">Entregas</a>
       </nav>
       <div class="nav-actions">
@@ -53,15 +54,84 @@
       <a href="#catalogo" data-filter="17" class="menu-link"><span>iPhone 17</span><span>03</span></a>
       <a href="#catalogo" data-filter="16" class="menu-link"><span>iPhone 16</span><span>04</span></a>
       <a href="#entregas" class="menu-link"><span>Entregas</span><span>05</span></a>
+      <a href="#novidades" class="menu-link"><span>Novidades</span><span>06</span></a>
       <p class="menu-bottom">GadgetX Africa <span>Apple. Mais perto de ti.</span></p>
     </div>
   </div>
 
   <main id="main">
+    <!-- 9,6 s de vídeo controlados pelo scroll, com o último fotograma antes da saída. -->
+    <section class="camera-story" id="experiencia" aria-labelledby="camera-title">
+      <div class="camera-stage">
+        <div class="camera-film">
+          <video id="camera-video" muted playsinline preload="auto" poster="assets/iphone18/camera-scroll-poster.webp" aria-label="Detalhe da abertura das lâminas da câmara do iPhone 18 Pro">
+            <source src="assets/iphone18/camera-scroll.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="camera-shade" aria-hidden="true"></div>
+        <div class="camera-opening">
+          <p class="eyebrow">UM OLHAR MAIS PERTO</p>
+          <h1 id="camera-title">iPhone 18 Pro.</h1>
+          <p>Abre uma nova perspetiva.</p>
+        </div>
+        <div class="camera-ending" inert aria-hidden="true">
+          <p class="eyebrow">O PRÓXIMO CAPÍTULO É TEU</p>
+          <h2>Vê mais.<br>Sente cada detalhe.</h2>
+          <button class="button light" data-product="18pro">Explorar iPhone 18 Pro <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="camera-toolbar">
+          <span class="camera-instruction">Desliza para explorar <span aria-hidden="true">↓</span></span>
+          <div class="camera-track" aria-hidden="true"><span></span></div>
+          <button type="button" id="camera-play" aria-pressed="false">Reproduzir vídeo</button>
+          <a href="#novidades">Saltar introdução ↗</a>
+        </div>
+        <p class="camera-fallback" role="status" hidden>O vídeo não está disponível. Continua a descobrir as novidades abaixo.</p>
+      </div>
+    </section>
+
+    <section class="news-section shell" id="novidades" aria-labelledby="news-title">
+      <div class="news-heading">
+        <div><p class="eyebrow">NOVIDADES · IPHONE 18 PRO</p><h2 id="news-title">Há muito para<br>ver de perto.</h2></div>
+        <p>Conhece os detalhes da nova família Pro.<br>Do primeiro olhar ao que está por dentro.</p>
+      </div>
+      <div class="news-grid">
+        <article class="news-card news-wide">
+          <div class="news-copy"><p class="eyebrow">OS ACABAMENTOS</p><h3>Quatro formas<br>de te destacares.</h3><p>Preto, prateado, glacier e o novo borgonha.</p></div>
+          <img src="assets/iphone18/finishes.webp" width="1600" height="900" alt="iPhone 18 Pro nos quatro acabamentos: preto, prateado, glacier e borgonha" loading="lazy">
+        </article>
+        <article class="news-card chip-card">
+          <div class="news-copy"><p class="eyebrow">A20 PRO</p><h3>O poder está<br>nos detalhes.</h3><p>O chip no centro da nova experiência Pro.</p></div>
+          <img src="assets/iphone18/a20-pro.webp" width="1200" height="900" alt="Chip A20 Pro" loading="lazy">
+        </article>
+      </div>
+      <div class="news-video-grid">
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/camera-controls-poster.webp" data-video-src="assets/iphone18/camera-controls.mp4" aria-label="Demonstração dos controlos Pro na aplicação Câmara"></video><button class="news-play" aria-label="Reproduzir demonstração dos controlos Pro">▶ <span>Ver em ação</span></button></div>
+          <p class="eyebrow">CÂMARA</p><h3>O controlo nas tuas mãos.</h3><p>Explora a abertura, a exposição e os controlos Pro.</p>
+        </article>
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/dynamic-island-poster.webp" data-video-src="assets/iphone18/dynamic-island.mp4" aria-label="Demonstração da Dynamic Island"></video><button class="news-play" aria-label="Reproduzir demonstração da Dynamic Island">▶ <span>Ver em ação</span></button></div>
+          <p class="eyebrow">DYNAMIC ISLAND</p><h3>Mais presente no teu dia.</h3><p>Acompanha as tuas atividades num só lugar.</p>
+        </article>
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/cooling-poster.webp" data-video-src="assets/iphone18/cooling.mp4" aria-label="Animação do sistema de arrefecimento do iPhone 18 Pro"></video><button class="news-play" aria-label="Reproduzir animação do sistema de arrefecimento">▶ <span>Ver por dentro</span></button></div>
+          <p class="eyebrow">POR DENTRO</p><h3>Engenharia em movimento.</h3><p>Um olhar sobre o novo sistema de arrefecimento.</p>
+        </article>
+      </div>
+      <div class="photo-heading"><h3>O mundo, pelo olhar do iPhone.</h3><p>Fotografias de demonstração da Apple, captadas com iPhone 18 Pro.</p></div>
+      <div class="photo-gallery">
+        <figure><img src="assets/iphone18/portrait.webp" alt="Retrato de uma mulher com luz suave, fotografado com iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Retratos com personalidade.</figcaption></figure>
+        <figure><img src="assets/iphone18/night.webp" alt="Pessoa em silhueta sob um céu estrelado, fotografada com modo Noite" loading="lazy" width="1200" height="900"><figcaption>A noite também tem histórias.</figcaption></figure>
+        <figure><img src="assets/iphone18/landscape.webp" alt="Paisagem de montanhas e vale, fotografada com a câmara principal do iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Mais mundo em cada imagem.</figcaption></figure>
+      </div>
+      <a class="news-source text-link" href="https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/" target="_blank" rel="noopener noreferrer">Imagens e vídeos: Apple · Ler o anúncio completo ↗</a>
+    </section>
+    <div class="preview">PRÉ-VISUALIZAÇÃO <span>Catálogo em preparação · pagamentos desativados</span></div>
+
     <section class="intro shell">
       <div>
         <p class="eyebrow">GADGETX AFRICA</p>
-        <h1>Loja. <span>O teu universo Apple.</span></h1>
+        <h2>Loja. <span>O teu universo Apple.</span></h2>
       </div>
       <a class="intro-support" href="https://wa.me/message/4E732CRQ5TRSF1" data-whatsapp target="_blank" rel="noopener noreferrer">Precisas de ajuda para escolher?<strong>Fala connosco ↗</strong></a>
     </section>
@@ -73,24 +143,6 @@
       <a href="#acessorios"><img src="assets/accessories.png" alt="" width="120" height="90"><span>Acessórios</span></a>
       <a href="#universo"><img src="assets/appletv.png" alt="" width="120" height="90"><span>Casa e TV</span></a>
     </nav>
-
-    <!-- Hero com zoom ligado ao scroll (ver "Hero" em js/app.js). -->
-    <section class="hero-scroll shell" id="experiencia" aria-labelledby="hero-title">
-      <div class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">EM DESTAQUE</p>
-          <h2 id="hero-title">iPhone 18 Pro.</h2>
-          <p class="hero-line">O próximo capítulo <br>é teu.</p>
-          <p class="hero-desc">Descobre a família Pro.<br>Escolhe o teu próximo iPhone.</p>
-          <button class="button light" data-product="18pro">Explorar os modelos <span aria-hidden="true">↗</span></button>
-          <p class="hero-meta">Pro e Pro Max · Preços a anunciar</p>
-        </div>
-        <div class="hero-media">
-          <img class="hero-phone" src="assets/iphone18-pro-detail.webp" alt="Detalhe das câmaras do iPhone 18 Pro em borgonha" fetchpriority="high" width="800" height="1000">
-        </div>
-        <span class="hero-counter" aria-hidden="true">01 / 03</span>
-      </div>
-    </section>
 
     <section class="catalog shell" id="catalogo">
       <div class="section-heading">
@@ -198,7 +250,7 @@
       <div class="form-grid">
         <label>Nome completo<input name="name" autocomplete="name" required minlength="2" maxlength="100"></label>
         <label>Email<input name="email" type="email" autocomplete="email" required maxlength="150"></label>
-        <label>Telefone com indicativo<input name="phone" type="tel" autocomplete="tel" placeholder="+258 84 000 0000" pattern="[+0-9 ()-]{7,25}" required maxlength="25"></label>
+        <label>Telefone com indicativo<input name="phone" type="tel" autocomplete="tel" placeholder="+258 84 000 0000" pattern="[+0-9 \(\)\-]{7,25}" required maxlength="25"></label>
         <label>País<select name="country" autocomplete="country-name" required id="country"><option value="">Seleciona o país</option></select></label>
         <label>Província / região<input name="region" autocomplete="address-level1" required maxlength="100"></label>
         <label>Cidade<input name="city" autocomplete="address-level2" required maxlength="100"></label>

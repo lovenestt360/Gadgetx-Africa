@@ -28,7 +28,7 @@ const STORE = {
       title: 'iPhone 18 Pro',
       label: 'EM DESTAQUE',
       sub: 'Pro e Pro Max.',
-      image: 'assets/iphone18-pro-detail.webp',
+      image: 'assets/iphone18/pro-duo.webp',
       lead: '18pro',
       featured: true
     },

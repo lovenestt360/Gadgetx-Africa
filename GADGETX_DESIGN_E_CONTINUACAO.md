@@ -59,3 +59,7 @@ Para experimentar localmente e publicar, ver o `README.md`. Não há etapa de co
 5. Realizar revisão de acessibilidade, desempenho e testes de compra completos antes da abertura pública.
 
 Este documento descreve a intenção do produto e os limites conhecidos em 24 de setembro de 2026. Alterações futuras devem atualizar este guia e o `README.md`.
+
+## Atualização — abertura com media do iPhone 18 Pro
+
+A abertura agora apresenta o vídeo real das lâminas da câmara após as saudações. O scroll controla o tempo de reprodução e o zoom out antes de revelar Novidades. A desmontagem completa do aparelho continua a ser uma proposta futura. A secção editorial reúne acabamentos, chip, demonstrações em vídeo e fotografias de exemplo. Regras, ficheiros, acessibilidade e origem dos recursos: [docs/IPHONE18_MEDIA_E_MOTION.md](docs/IPHONE18_MEDIA_E_MOTION.md).

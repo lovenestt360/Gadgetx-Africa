@@ -52,3 +52,7 @@ Abrir `public/index.html` diretamente no navegador também funciona.
 ## Antes de cada publicação
 
 Ver a secção 6 do [guia de design](GADGETX_DESIGN_E_CONTINUACAO.md#6-critérios-de-revisão-antes-de-cada-publicação): testar desktop e telemóvel, menu, diálogos, carrinho, formulário e `prefers-reduced-motion`.
+
+## Abertura do iPhone 18 Pro e novidades
+
+A sequência “Hello → vídeo das câmaras → zoom out com scroll → novidades” está documentada em [docs/IPHONE18_MEDIA_E_MOTION.md](docs/IPHONE18_MEDIA_E_MOTION.md). O controlador independente está em `public/js/camera-story.js`. Os vídeos de apoio só são carregados quando o visitante os reproduz.

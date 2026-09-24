@@ -411,35 +411,7 @@ registerReveals();
 const productGrid = $('#products');
 new MutationObserver(() => registerReveals(productGrid)).observe(productGrid, { childList: true });
 
-// Hero: o progresso do scroll (0–1) controla o zoom da imagem.
-// Uma futura sequência de fotogramas pode usar o mesmo valor de progresso.
-const heroScroll = $('.hero-scroll');
-const hero = $('.hero');
-const heroCounter = $('.hero-counter');
-let heroFrame = 0;
-let heroProgress = 0;
-let heroTarget = 0;
-
-function paintHero() {
-  heroFrame = 0;
-  if (reducedMotion.matches) return;
-  heroProgress += (heroTarget - heroProgress) * 0.12;
-  if (Math.abs(heroTarget - heroProgress) < 0.0005) heroProgress = heroTarget;
-  const p = heroProgress;
-  hero.style.setProperty('--story-scale', (0.88 + p * 0.24).toFixed(4));
-  heroCounter.textContent = String(Math.min(3, 1 + Math.floor(p * 3))).padStart(2, '0') + ' / 03';
-  if (p !== heroTarget) heroFrame = requestAnimationFrame(paintHero);
-}
-
-function requestHero() {
-  const top = parseFloat(getComputedStyle(hero).top) || 0;
-  const travel = Math.max(1, heroScroll.offsetHeight - hero.offsetHeight);
-  heroTarget = Math.max(0, Math.min(1, (top - heroScroll.getBoundingClientRect().top) / travel));
-  if (!heroFrame) heroFrame = requestAnimationFrame(paintHero);
-}
-window.addEventListener('scroll', requestHero, { passive: true });
-window.addEventListener('resize', requestHero, { passive: true });
-requestHero();
+// A abertura cinematográfica é gerida por camera-story.js.
 
 // Botões "magnéticos" que seguem ligeiramente o ponteiro
 if (finePointer.matches) {
@@ -504,6 +476,7 @@ if (!reducedMotion.matches && !cameBack) {
   const word = entry.querySelector('.entry-word');
   let index = 0;
   entry.classList.add('playing');
+  document.body.classList.add('entry-loading');
   const cycle = setInterval(() => {
     index++;
     if (index < words.length) {
@@ -514,15 +487,19 @@ if (!reducedMotion.matches && !cameBack) {
     entry.classList.add('exit');
     setTimeout(() => {
       entry.classList.remove('playing', 'exit');
+      document.body.classList.remove('entry-loading');
       document.body.classList.add('entry-complete');
+      window.dispatchEvent(new Event('gadgetx:intro-ready'));
     }, 700);
   }, 285);
+} else {
+  document.body.classList.add('entry-complete');
 }
 
 reducedMotion.addEventListener('change', () => {
   if (!reducedMotion.matches) return;
   $$('.reveal-item').forEach(el => el.classList.add('in-view'));
   entry.classList.remove('playing', 'exit');
-  cancelAnimationFrame(heroFrame);
-  heroFrame = 0;
+  document.body.classList.remove('entry-loading');
+  document.body.classList.add('entry-complete');
 });
