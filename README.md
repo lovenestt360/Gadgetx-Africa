@@ -24,6 +24,7 @@ Não há dependências nem etapa de compilação: os ficheiros em `public/` são
 | --- | --- |
 | Mudar o link do WhatsApp ou Instagram | `contact` em `public/js/data.js` (atualiza a página toda) |
 | Adicionar/editar um modelo de iPhone ou capacidades | `iphones` em `public/js/data.js` |
+| Adicionar uma cor (com foto) a um modelo | `colors` em `public/js/data.js` (+ foto em `public/assets/iphone18/cores/`) |
 | Mudar imagem, título ou texto de um cartão do catálogo | `families` em `public/js/data.js` |
 | Adicionar um acessório, AirPods, etc. | `shop` em `public/js/data.js` (+ imagem em `public/assets/`) |
 | Editar Entregas, Devoluções, Privacidade, Termos | `policies` em `public/js/data.js` |

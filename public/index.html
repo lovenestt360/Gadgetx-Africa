@@ -83,49 +83,12 @@
           <span class="camera-instruction">Desliza para explorar <span aria-hidden="true">↓</span></span>
           <div class="camera-track" aria-hidden="true"><span></span></div>
           <button type="button" id="camera-play" aria-pressed="false">Reproduzir vídeo</button>
-          <a href="#novidades">Saltar introdução ↗</a>
+          <a href="#catalogo">Saltar introdução ↗</a>
         </div>
-        <p class="camera-fallback" role="status" hidden>O vídeo não está disponível. Continua a descobrir as novidades abaixo.</p>
+        <p class="camera-fallback" role="status" hidden>O vídeo não está disponível. Continua a descobrir a loja abaixo.</p>
       </div>
     </section>
 
-    <section class="news-section shell" id="novidades" aria-labelledby="news-title">
-      <div class="news-heading">
-        <div><p class="eyebrow">NOVIDADES · IPHONE 18 PRO</p><h2 id="news-title">Há muito para<br>ver de perto.</h2></div>
-        <p>Conhece os detalhes da nova família Pro.<br>Do primeiro olhar ao que está por dentro.</p>
-      </div>
-      <div class="news-grid">
-        <article class="news-card news-wide">
-          <div class="news-copy"><p class="eyebrow">OS ACABAMENTOS</p><h3>Quatro formas<br>de te destacares.</h3><p>Preto, prateado, glacier e o novo borgonha.</p></div>
-          <img src="assets/iphone18/finishes.webp" width="1600" height="900" alt="iPhone 18 Pro nos quatro acabamentos: preto, prateado, glacier e borgonha" loading="lazy">
-        </article>
-        <article class="news-card chip-card">
-          <div class="news-copy"><p class="eyebrow">A20 PRO</p><h3>O poder está<br>nos detalhes.</h3><p>O chip no centro da nova experiência Pro.</p></div>
-          <img src="assets/iphone18/a20-pro.webp" width="1200" height="900" alt="Chip A20 Pro" loading="lazy">
-        </article>
-      </div>
-      <div class="news-video-grid">
-        <article class="news-video-card">
-          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/camera-controls-poster.webp" data-video-src="assets/iphone18/camera-controls.mp4" aria-label="Demonstração dos controlos Pro na aplicação Câmara"></video><button class="news-play" aria-label="Reproduzir demonstração dos controlos Pro">▶ <span>Ver em ação</span></button></div>
-          <p class="eyebrow">CÂMARA</p><h3>O controlo nas tuas mãos.</h3><p>Explora a abertura, a exposição e os controlos Pro.</p>
-        </article>
-        <article class="news-video-card">
-          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/dynamic-island-poster.webp" data-video-src="assets/iphone18/dynamic-island.mp4" aria-label="Demonstração da Dynamic Island"></video><button class="news-play" aria-label="Reproduzir demonstração da Dynamic Island">▶ <span>Ver em ação</span></button></div>
-          <p class="eyebrow">DYNAMIC ISLAND</p><h3>Mais presente no teu dia.</h3><p>Acompanha as tuas atividades num só lugar.</p>
-        </article>
-        <article class="news-video-card">
-          <div class="news-video-wrap"><video muted playsinline preload="none" poster="assets/iphone18/cooling-poster.webp" data-video-src="assets/iphone18/cooling.mp4" aria-label="Animação do sistema de arrefecimento do iPhone 18 Pro"></video><button class="news-play" aria-label="Reproduzir animação do sistema de arrefecimento">▶ <span>Ver por dentro</span></button></div>
-          <p class="eyebrow">POR DENTRO</p><h3>Engenharia em movimento.</h3><p>Um olhar sobre o novo sistema de arrefecimento.</p>
-        </article>
-      </div>
-      <div class="photo-heading"><h3>O mundo, pelo olhar do iPhone.</h3><p>Fotografias de demonstração da Apple, captadas com iPhone 18 Pro.</p></div>
-      <div class="photo-gallery">
-        <figure><img src="assets/iphone18/portrait.webp" alt="Retrato de uma mulher com luz suave, fotografado com iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Retratos com personalidade.</figcaption></figure>
-        <figure><img src="assets/iphone18/night.webp" alt="Pessoa em silhueta sob um céu estrelado, fotografada com modo Noite" loading="lazy" width="1200" height="900"><figcaption>A noite também tem histórias.</figcaption></figure>
-        <figure><img src="assets/iphone18/landscape.webp" alt="Paisagem de montanhas e vale, fotografada com a câmara principal do iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Mais mundo em cada imagem.</figcaption></figure>
-      </div>
-      <a class="news-source text-link" href="https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/" target="_blank" rel="noopener noreferrer">Imagens e vídeos: Apple · Ler o anúncio completo ↗</a>
-    </section>
     <div class="preview">PRÉ-VISUALIZAÇÃO <span>Catálogo em preparação · pagamentos desativados</span></div>
 
     <section class="intro shell">
@@ -152,6 +115,7 @@
       <div class="filters" role="group" aria-label="Filtrar por geração">
         <button data-filter="all" class="active" aria-pressed="true">Todos</button>
         <button data-filter="18" aria-pressed="false">iPhone 18</button>
+        <button data-filter="fold" aria-pressed="false">iPhone Fold</button>
         <button data-filter="17" aria-pressed="false">iPhone 17</button>
         <button data-filter="16" aria-pressed="false">iPhone 16</button>
       </div>
@@ -174,6 +138,45 @@
     <section class="shop-section shell" id="universo">
       <div class="section-heading"><h2>Mais Apple. <span>Mais possibilidades.</span></h2></div>
       <div class="shop-grid" data-shop="universo"></div>
+    </section>
+
+    <!-- Novidades do iPhone 18 Pro: depois da loja, antes das entregas. -->
+    <section class="news-section shell" id="novidades" aria-labelledby="news-title">
+      <div class="news-heading">
+        <div><p class="eyebrow">NOVIDADES · IPHONE 18 PRO</p><h2 id="news-title">Há muito para<br>ver de perto.</h2></div>
+        <p>Conhece os detalhes da nova família Pro.<br>Do primeiro olhar ao que está por dentro.</p>
+      </div>
+      <div class="news-grid">
+        <article class="news-card news-wide">
+          <div class="news-copy"><p class="eyebrow">OS ACABAMENTOS</p><h3>Quatro formas<br>de te destacares.</h3><p>Preto, prateado, glacier e o novo borgonha.</p></div>
+          <img src="assets/iphone18/finishes.webp" width="1600" height="900" alt="iPhone 18 Pro nos quatro acabamentos: preto, prateado, glacier e borgonha" loading="lazy">
+        </article>
+        <article class="news-card chip-card">
+          <div class="news-copy"><p class="eyebrow">A20 PRO</p><h3>O poder está<br>nos detalhes.</h3><p>O chip no centro da nova experiência Pro.</p></div>
+          <img src="assets/iphone18/a20-pro.webp" width="1200" height="900" alt="Chip A20 Pro" loading="lazy">
+        </article>
+      </div>
+      <div class="news-video-grid">
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback poster="assets/iphone18/camera-controls-poster.webp" data-video-src="assets/iphone18/camera-controls.mp4" aria-label="Demonstração dos controlos Pro na aplicação Câmara"></video></div>
+          <p class="eyebrow">CÂMARA</p><h3>O controlo nas tuas mãos.</h3><p>Explora a abertura, a exposição e os controlos Pro.</p>
+        </article>
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback poster="assets/iphone18/dynamic-island-poster.webp" data-video-src="assets/iphone18/dynamic-island.mp4" aria-label="Demonstração da Dynamic Island"></video></div>
+          <p class="eyebrow">DYNAMIC ISLAND</p><h3>Mais presente no teu dia.</h3><p>Acompanha as tuas atividades num só lugar.</p>
+        </article>
+        <article class="news-video-card">
+          <div class="news-video-wrap"><video muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback poster="assets/iphone18/cooling-poster.webp" data-video-src="assets/iphone18/cooling.mp4" aria-label="Animação do sistema de arrefecimento do iPhone 18 Pro"></video></div>
+          <p class="eyebrow">POR DENTRO</p><h3>Engenharia em movimento.</h3><p>Um olhar sobre o novo sistema de arrefecimento.</p>
+        </article>
+      </div>
+      <div class="photo-heading"><h3>O mundo, pelo olhar do iPhone.</h3><p>Fotografias de demonstração da Apple, captadas com iPhone 18 Pro.</p></div>
+      <div class="photo-gallery">
+        <figure><img src="assets/iphone18/portrait.webp" alt="Retrato de uma mulher com luz suave, fotografado com iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Retratos com personalidade.</figcaption></figure>
+        <figure><img src="assets/iphone18/night.webp" alt="Pessoa em silhueta sob um céu estrelado, fotografada com modo Noite" loading="lazy" width="1200" height="900"><figcaption>A noite também tem histórias.</figcaption></figure>
+        <figure><img src="assets/iphone18/landscape.webp" alt="Paisagem de montanhas e vale, fotografada com a câmara principal do iPhone 18 Pro" loading="lazy" width="1200" height="900"><figcaption>Mais mundo em cada imagem.</figcaption></figure>
+      </div>
+      <a class="news-source text-link" href="https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/" target="_blank" rel="noopener noreferrer">Imagens e vídeos: Apple · Ler o anúncio completo ↗</a>
     </section>
 
     <section class="delivery shell" id="entregas">

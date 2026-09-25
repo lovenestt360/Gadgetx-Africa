@@ -14,6 +14,9 @@ const esc = value => String(value).replace(/[&<>"']/g, ch => (
 
 const findIphone = id => STORE.iphones.find(p => p.id === id);
 const familyOf = gen => STORE.families.find(f => f.gen === gen);
+const colorsOf = p => (p && STORE.colors[p.colors]) || [];
+// Descrição da variante no carrinho e na revisão: "512 GB · Preto".
+const variantLabel = x => [x.size, x.color].filter(Boolean).join(' · ');
 const MAX_QTY = STORE.maxQtyPerItem;
 const CART_KEY = 'gadgetx-cart';
 
@@ -50,8 +53,13 @@ try {
   const raw = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
   if (Array.isArray(raw)) {
     cart = raw
-      .filter(x => x && findIphone(x.id)?.sizes.includes(x.size) && Number.isInteger(x.qty) && x.qty > 0 && x.qty <= MAX_QTY)
-      .map(x => ({ id: x.id, size: x.size, qty: x.qty }))
+      .filter(x => {
+        const p = x && findIphone(x.id);
+        if (!p || !p.sizes.includes(x.size) || !Number.isInteger(x.qty) || x.qty < 1 || x.qty > MAX_QTY) return false;
+        // Cor opcional; quando existe tem de ser uma das cores do modelo.
+        return x.color === undefined || colorsOf(p).some(c => c.name === x.color);
+      })
+      .map(x => ({ id: x.id, size: x.size, color: x.color, qty: x.qty }))
       .slice(0, 20);
   }
 } catch { /* armazenamento indisponível: começa vazio */ }
@@ -61,14 +69,14 @@ function saveCart() {
   $('#bag-count').textContent = cart.reduce((n, x) => n + x.qty, 0);
 }
 
-function addToCart(id, size) {
-  const item = cart.find(x => x.id === id && x.size === size);
+function addToCart(id, size, color) {
+  const item = cart.find(x => x.id === id && x.size === size && x.color === color);
   if (item && item.qty >= MAX_QTY) {
     toast(`Máximo de ${MAX_QTY} unidades por variante nesta demonstração.`);
     return false;
   }
   if (item) item.qty++;
-  else cart.push({ id, size, qty: 1 });
+  else cart.push({ id, size, color, qty: 1 });
   saveCart();
   return true;
 }
@@ -85,7 +93,7 @@ function renderBag() {
       <article class="bag-line">
         <div>
           <h3>${esc(p.name)}</h3>
-          <p>${esc(x.size)} · Preço por confirmar</p>
+          <p>${esc(variantLabel(x))} · Preço por confirmar</p>
           <button class="remove" data-remove="${i}">Remover</button>
         </div>
         <div class="quantity">
@@ -138,48 +146,76 @@ function renderProducts(gen = 'all') {
   });
   $('#products').innerHTML = STORE.families
     .filter(f => gen === 'all' || f.gen === gen)
-    .map(f => `
+    .map(f => {
+      const colors = colorsOf(findIphone(f.lead));
+      const swatches = colors.length
+        ? `<p class="product-colors" aria-label="Cores: ${esc(colors.map(c => c.name).join(', '))}">${colors.map(c => `<span class="swatch" style="--swatch:${esc(c.hex)}" title="${esc(c.name)}"></span>`).join('')}</p>`
+        : '';
+      return `
       <article class="product-card ${f.featured ? 'featured' : ''}">
         <p class="generation">${esc(f.label)}</p>
-        <button type="button" data-product="${esc(f.lead)}" aria-label="Explorar a família iPhone ${esc(f.gen)}" class="product-visual gen-${esc(f.gen)}">
-          <img loading="lazy" src="${esc(f.image)}" alt="Imagem da família iPhone ${esc(f.gen)}">
+        <button type="button" data-product="${esc(f.lead)}" aria-label="Explorar ${esc(f.title)}" class="product-visual gen-${esc(f.gen)}">
+          <img loading="lazy" src="${esc(f.image)}" alt="${esc(f.title)}">
         </button>
         <h3>${esc(f.title)}</h3>
         <p class="product-sub">${esc(f.sub)}</p>
+        ${swatches}
         <div class="product-bottom">
           <p>Preço por confirmar</p>
           <button class="model-button" data-product="${esc(f.lead)}">Ver modelos <span aria-hidden="true">↗</span></button>
         </div>
-      </article>`)
+      </article>`;
+    })
     .join('');
 }
 
-function showProduct(id) {
+// `preferredColor` mantém a cor escolhida ao trocar de modelo (ex.: Pro → Pro Max).
+function showProduct(id, preferredColor) {
   const p = findIphone(id);
   if (!p) return;
   const detail = $('#product-detail');
   const models = STORE.iphones.filter(x => x.gen === p.gen);
+  const family = familyOf(p.gen);
+  const colors = colorsOf(p);
+  let color = colors.find(c => c.name === preferredColor) || colors[0];
+  const photoAlt = c => c ? `${p.name} em ${c.name}` : `Imagem ilustrativa de ${family?.title || p.name}`;
   detail.innerHTML = `
-    <p class="eyebrow">IPHONE · GERAÇÃO ${esc(p.gen)}</p>
+    <p class="eyebrow">${esc((family?.title || p.name).toUpperCase())}</p>
     <h2 id="product-title">${esc(p.name)}</h2>
     <p class="muted">${esc(p.sub)}</p>
-    <img class="detail-photo" src="${esc(familyOf(p.gen)?.image || '')}" alt="Imagem ilustrativa da família iPhone ${esc(p.gen)}">
+    <img class="detail-photo" src="${esc(color?.image || family?.image || '')}" alt="${esc(photoAlt(color))}">
     <label class="detail-label" for="model-choice">Modelo</label>
     <select id="model-choice">
       ${models.map(x => `<option value="${esc(x.id)}" ${x.id === p.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}
     </select>
+    ${colors.length ? `
+    <span class="detail-label">Cor · <strong id="color-name">${esc(color.name)}</strong></span>
+    <div class="option-row color-row" role="group" aria-label="Escolher cor">
+      ${colors.map(c => `<button data-color="${esc(c.name)}" class="${c === color ? 'selected' : ''}" aria-pressed="${c === color}"><span class="swatch" style="--swatch:${esc(c.hex)}"></span>${esc(c.name)}</button>`).join('')}
+    </div>` : ''}
     <span class="detail-label">Capacidade pretendida</span>
     <div class="option-row" role="group" aria-label="Escolher capacidade">
       ${p.sizes.map((s, i) => `<button data-size="${esc(s)}" class="${i === 0 ? 'selected' : ''}" aria-pressed="${i === 0}">${esc(s)}</button>`).join('')}
     </div>
-    <p class="notice">Preço, cores e stock por confirmar. A seleção de capacidade nesta demonstração representa uma preferência e não uma reserva de stock.</p>
+    <p class="notice">Preço e stock por confirmar. A cor e a capacidade escolhidas nesta demonstração representam uma preferência e não uma reserva de stock.</p>
     <div class="detail-actions">
       <button class="button dark" id="add-cart">Adicionar ao carrinho <span aria-hidden="true">+</span></button>
       <a href="${esc(STORE.contact.whatsapp)}" target="_blank" rel="noopener noreferrer">Tirar uma dúvida ↗</a>
     </div>`;
 
   let selected = p.sizes[0];
-  $('#model-choice').onchange = e => showProduct(e.target.value);
+  $('#model-choice').onchange = e => showProduct(e.target.value, color?.name);
+  $$('[data-color]', detail).forEach(b => b.addEventListener('click', () => {
+    color = colors.find(c => c.name === b.dataset.color);
+    const photo = $('.detail-photo', detail);
+    photo.src = color.image;
+    photo.alt = photoAlt(color);
+    $('#color-name').textContent = color.name;
+    $$('[data-color]', detail).forEach(x => {
+      x.classList.toggle('selected', x === b);
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+  }));
   $$('[data-size]', detail).forEach(b => b.addEventListener('click', () => {
     selected = b.dataset.size;
     $$('[data-size]', detail).forEach(x => {
@@ -188,9 +224,9 @@ function showProduct(id) {
     });
   }));
   $('#add-cart').onclick = () => {
-    if (!addToCart(p.id, selected)) return;
+    if (!addToCart(p.id, selected, color?.name)) return;
     $('#product-dialog').close();
-    toast(`${p.name} adicionado ao carrinho`);
+    toast(`${[p.name, color?.name].filter(Boolean).join(' · ')} adicionado ao carrinho`);
   };
 
   if ($('#product-dialog').open) $('#model-choice').focus({ preventScroll: true });
@@ -231,7 +267,7 @@ $('#shipping-form').addEventListener('submit', e => {
     const row = add('div', 'review-row');
     const model = document.createElement('span');
     const qty = document.createElement('span');
-    model.textContent = `${findIphone(x.id).name} · ${x.size}`;
+    model.textContent = `${findIphone(x.id).name} · ${variantLabel(x)}`;
     qty.textContent = `× ${x.qty}`;
     row.append(model, qty);
   });

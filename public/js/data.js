@@ -33,6 +33,14 @@ const STORE = {
       featured: true
     },
     {
+      gen: 'fold',
+      title: 'iPhone Fold',
+      label: 'NOVO · DOBRÁVEL',
+      sub: 'Descobre o iPhone dobrável.',
+      image: 'assets/iphone18/cores/fold-branco.png',
+      lead: 'fold'
+    },
+    {
       gen: '17',
       title: 'iPhone 17',
       label: 'FAMÍLIA IPHONE 17',
@@ -50,10 +58,28 @@ const STORE = {
     }
   ],
 
+  // Cores com fotografia própria. `hex` é só a amostra circular; `image` é a foto mostrada ao escolher.
+  // Para acrescentar uma cor: juntar uma linha aqui e a foto em public/assets/.
+  colors: {
+    iphone18pro: [
+      { name: 'Borgonha', hex: '#6b2f3c', image: 'assets/iphone18/pro-duo.webp' },
+      { name: 'Preto', hex: '#2b2b2e', image: 'assets/iphone18/cores/18pro-preto.png' },
+      { name: 'Glacier', hex: '#b9c8da', image: 'assets/iphone18/cores/18pro-azul.png' },
+      { name: 'Prateado', hex: '#e4e4e2', image: 'assets/iphone18/cores/18pro-prateado.png' }
+    ],
+    iphoneFold: [
+      { name: 'Branco', hex: '#eeeeea', image: 'assets/iphone18/cores/fold-branco.png' },
+      { name: 'Azul-noite', hex: '#2c3446', image: 'assets/iphone18/cores/fold-azul-noite.png' }
+    ]
+  },
+
   // `id` é guardado no carrinho do navegador: não mudar ids de modelos existentes.
+  // `colors` aponta para uma lista em STORE.colors (opcional).
   iphones: [
-    { id: '18pro', name: 'iPhone 18 Pro', gen: '18', sub: 'A nova geração Pro.', sizes: ['256 GB', '512 GB', '1 TB'] },
-    { id: '18max', name: 'iPhone 18 Pro Max', gen: '18', sub: 'A nova geração, em Pro Max.', sizes: ['256 GB', '512 GB', '1 TB'] },
+    { id: '18pro', name: 'iPhone 18 Pro', gen: '18', sub: 'A nova geração Pro.', sizes: ['256 GB', '512 GB', '1 TB'], colors: 'iphone18pro' },
+    { id: '18max', name: 'iPhone 18 Pro Max', gen: '18', sub: 'A nova geração, em Pro Max.', sizes: ['256 GB', '512 GB', '1 TB'], colors: 'iphone18pro' },
+    // Capacidades do Fold ainda por confirmar pela GadgetX: substituir quando houver dados reais.
+    { id: 'fold', name: 'iPhone Fold', gen: 'fold', sub: 'O iPhone que se dobra.', sizes: ['Capacidade a confirmar'], colors: 'iphoneFold' },
     { id: '17', name: 'iPhone 17', gen: '17', sub: 'O teu dia, no teu iPhone.', sizes: ['256 GB', '512 GB'] },
     { id: '17pro', name: 'iPhone 17 Pro', gen: '17', sub: 'Explora a família Pro.', sizes: ['256 GB', '512 GB', '1 TB'] },
     { id: '17max', name: 'iPhone 17 Pro Max', gen: '17', sub: 'Mais espaço para o teu dia.', sizes: ['256 GB', '512 GB', '1 TB'] },

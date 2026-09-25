@@ -6,10 +6,19 @@ Referência principal: vídeo de detalhe da câmara e material Apple Newsroom fo
 ## Sequência implementada
 1. As saudações ocupam aproximadamente 2,1 segundos; o scroll fica bloqueado apenas enquanto essa entrada termina.
 2. A câmara ocupa a primeira secção, imediatamente após a cortina. O vídeo é silencioso e tem 9,6 segundos.
-3. O scroll nativo controla o instante do vídeo. O vídeo termina aos 88% do percurso; os restantes 12% mantêm o último fotograma antes da secção Novidades.
+3. O scroll nativo controla o instante do vídeo. O vídeo termina aos 88% do percurso; os restantes 12% mantêm o último fotograma antes da loja (introdução, categorias e catálogo de iPhone).
 4. A escala da superfície desce de 1,12 para 0,78 ao longo do percurso. O título inicial desaparece e a chamada para explorar o modelo entra no final.
-5. Voltar atrás no scroll faz o vídeo recuar. Não se capturam eventos wheel/touch nem se força o visitante a terminar a sequência: menu e “Saltar introdução” permitem acesso direto.
+5. Voltar atrás no scroll faz o vídeo recuar. Não se capturam eventos wheel/touch nem se força o visitante a terminar a sequência: menu e “Saltar introdução” (leva ao catálogo) permitem acesso direto.
 6. “Reproduzir vídeo” permite reprodução contínua com controlos nativos. Scroll posterior regressa ao modo sincronizado.
+
+## Ordem da página
+Abertura com vídeo → loja (introdução, categorias, catálogo de iPhone) → AirPods → acessórios → Mais Apple (relógios, casa e TV) → Novidades (acabamentos, A20 Pro, vídeos) → fotografias “O mundo, pelo olhar do iPhone” → entregas → ajuda.
+
+## Vídeos das Novidades
+Os três vídeos (controlos da câmara, Dynamic Island, arrefecimento) tocam automaticamente, sem som, em loop e sem controlos nem botões. Só descarregam e tocam quando pelo menos 25% do vídeo está no ecrã e param ao sair. Com movimento reduzido mostram apenas o poster.
+
+## Cores e iPhone Fold
+As cores com fotografia própria estão em `STORE.colors` (`public/js/data.js`); cada modelo aponta para uma lista com `colors`. No detalhe do produto, escolher a cor troca a fotografia e a cor fica guardada no carrinho. As fotografias recortadas (PNG transparente, 720 px) estão em `public/assets/iphone18/cores/`. As capacidades do iPhone Fold estão como “Capacidade a confirmar” até haver dados reais.
 
 ## Ficheiros
 - `public/js/camera-story.js`: sincronização de tempo, estados, reprodução manual, erros, movimento reduzido e vídeos das novidades.
@@ -19,7 +28,7 @@ Referência principal: vídeo de detalhe da câmara e material Apple Newsroom fo
 - `public/js/data.js`: fotografia da família 18 atualizada para a imagem dos dois aparelhos.
 
 ## Entrega de media
-O vídeo principal carrega no início; usa H.264, sem áudio, faststart e keyframes frequentes para procurar fotogramas. Os outros vídeos só recebem `src` ao serem solicitados. As fotografias abaixo da abertura têm carregamento diferido. O vídeo original não contém a desmontagem completa do telefone: a animação apresentada é a abertura da câmara e o zoom out da superfície de vídeo.
+O vídeo principal carrega no início; usa H.264, sem áudio, faststart e keyframes frequentes para procurar fotogramas. Os outros vídeos só recebem `src` quando entram no ecrã. As fotografias abaixo da abertura têm carregamento diferido. O vídeo original não contém a desmontagem completa do telefone: a animação apresentada é a abertura da câmara e o zoom out da superfície de vídeo.
 
 Movimento reduzido remove a sequência longa e o zoom: apresenta um hero estático com opção de reprodução manual. Erro do vídeo conserva o poster, apresenta uma mensagem e reduz a secção ao tamanho do ecrã. O menu, catálogo e checkout de demonstração continuam independentes da reprodução.
 

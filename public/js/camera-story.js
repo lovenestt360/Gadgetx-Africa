@@ -96,34 +96,36 @@
   });
   requestRender();
 
-  // Supporting films download only when requested. Native controls remain available.
+  // Vídeos das Novidades: reprodução automática, em loop e sem controlos.
+  // Só descarregam e tocam quando estão no ecrã; com movimento reduzido fica o poster.
   const films = [...document.querySelectorAll('.news-video-wrap video')];
+  const startFilm = film => {
+    if (reduced.matches) return;
+    if (!film.getAttribute('src')) film.src = film.dataset.videoSrc;
+    film.play().catch(() => { /* autoplay bloqueado: fica o poster */ });
+  };
   films.forEach(film => {
-    const button = film.parentElement.querySelector('.news-play');
-    button.addEventListener('click', async () => {
-      films.forEach(other => { if (other !== film) other.pause(); });
-      button.disabled = true;
-      if (!film.src) film.src = film.dataset.videoSrc;
-      film.controls = true;
-      try {
-        await film.play();
-        button.hidden = true;
-        film.focus();
-      } catch (_) {
-        button.textContent = 'Tentar novamente';
-      } finally { button.disabled = false; }
-    });
-    film.tabIndex = 0;
-    film.addEventListener('error', () => {
-      button.hidden = false;
-      button.disabled = false;
-      button.textContent = 'Vídeo indisponível · tentar novamente';
+    film.controls = false;
+    film.addEventListener('pause', () => {
+      // Sem controlos, só pausa quando sai do ecrã ou com movimento reduzido.
+      if (film.dataset.visible === 'true' && !reduced.matches && !document.hidden) startFilm(film);
     });
   });
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-      if (!entry.isIntersecting) entry.target.pause();
-    }), { threshold: .05 });
+      entry.target.dataset.visible = String(entry.isIntersecting);
+      if (entry.isIntersecting) startFilm(entry.target);
+      else entry.target.pause();
+    }), { threshold: .25 });
     films.forEach(film => observer.observe(film));
+  } else {
+    films.forEach(startFilm);
   }
+  reduced.addEventListener('change', () => films.forEach(film => {
+    if (reduced.matches) film.pause();
+    else if (film.dataset.visible === 'true') startFilm(film);
+  }));
+  document.addEventListener('visibilitychange', () => films.forEach(film => {
+    if (!document.hidden && film.dataset.visible === 'true') startFilm(film);
+  }));
 })();
