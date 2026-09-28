@@ -11,6 +11,8 @@ public/               ← tudo o que é publicado (o Vercel serve esta pasta)
   css/style.css       estilos, organizados por secções numeradas
   js/data.js          CONTEÚDO EDITÁVEL: catálogo, acessórios, contactos, políticas, países
   js/app.js           lógica: catálogo, carrinho, checkout, menu e animações
+  js/storefront.js    galeria, pesquisa, variantes e barra de compra
+  js/news-videos.js   vídeos editoriais das Novidades
   assets/             imagens e logótipos
 referencias/          materiais de referência (não publicados)
 vercel.json           configuração do Vercel (pasta publicada, cabeçalhos, cache)
@@ -54,6 +56,6 @@ Abrir `public/index.html` diretamente no navegador também funciona.
 
 Ver a secção 6 do [guia de design](GADGETX_DESIGN_E_CONTINUACAO.md#6-critérios-de-revisão-antes-de-cada-publicação): testar desktop e telemóvel, menu, diálogos, carrinho, formulário e `prefers-reduced-motion`.
 
-## Abertura do iPhone 18 Pro e novidades
+## Página de produto e novidades
 
-A sequência “Hello → vídeo das câmaras → zoom out com scroll → novidades” está documentada em [docs/IPHONE18_MEDIA_E_MOTION.md](docs/IPHONE18_MEDIA_E_MOTION.md). O controlador independente está em `public/js/camera-story.js`. Os vídeos de apoio só são carregados quando o visitante os reproduz.
+Depois do Hello, a loja abre na página de produto do iPhone 18 Pro. A antiga secção de vídeo controlada pelo scroll foi removida. A organização atual e as regras de continuação estão em [docs/PRODUCT_PAGE_DESIGN.md](docs/PRODUCT_PAGE_DESIGN.md). Os vídeos das Novidades só carregam quando entram no ecrã e permanecem silenciosos.

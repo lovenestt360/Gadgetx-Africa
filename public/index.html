@@ -10,9 +10,10 @@
   <!-- data.js tem o conteúdo editável (catálogo, contactos, políticas); app.js tem a lógica. -->
   <script src="js/data.js" defer></script>
   <script src="js/app.js" defer></script>
-  <script src="js/camera-story.js" defer></script>
+  <script src="js/news-videos.js" defer></script>
+  <script src="js/storefront.js" defer></script>
 </head>
-<body class="camera-view">
+<body>
   <a class="skip" href="#main">Saltar para o conteúdo</a>
 
   <div class="entry-loader" aria-hidden="true">
@@ -24,18 +25,18 @@
   </div>
 
 
+  <div class="announcement">iPhone 18 Pro na GadgetX. <a href="#produto-destaque">Descobre-o <span aria-hidden="true">↗</span></a></div>
   <header>
     <div class="nav-shell">
       <a href="#main" class="brand" aria-label="GadgetX Africa, início">
         <img src="assets/logo-dark.png" alt="GadgetX — Apple Premium Partner">
       </a>
-      <nav class="main-nav" aria-label="Navegação principal">
-        <a href="#catalogo" data-filter="18">iPhone 18</a>
-        <a href="#catalogo" data-filter="17">iPhone 17</a>
-        <a href="#catalogo" data-filter="16">iPhone 16</a>
-        <a href="#novidades">Novidades</a>
-        <a href="#entregas">Entregas</a>
-      </nav>
+      <form class="site-search" id="site-search" role="search" autocomplete="off">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 5 5"/></svg>
+        <input id="search-input" type="search" placeholder="Pesquisar na GadgetX" aria-label="Pesquisar produtos" aria-controls="search-results" aria-expanded="false">
+        <div id="search-results" class="search-results" hidden></div>
+      </form>
+      <a class="header-delivery" href="#entregas"><span>Entrega em África</span><strong>Consultar destino ↗</strong></a>
       <div class="nav-actions">
         <button class="bag-btn" id="open-bag" aria-label="Abrir carrinho">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
@@ -44,6 +45,13 @@
         <button class="menu-toggle magnetic" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-menu"><span></span><span></span></button>
       </div>
     </div>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#catalogo" data-filter="18">iPhone 18</a>
+      <a href="#catalogo" data-filter="17">iPhone 17</a>
+      <a href="#catalogo" data-filter="16">iPhone 16</a>
+      <a href="#novidades">Novidades</a>
+      <a href="#entregas">Entregas</a>
+    </nav>
   </header>
 
   <div class="site-menu" id="site-menu" inert aria-hidden="true">
@@ -60,35 +68,73 @@
   </div>
 
   <main id="main">
-    <!-- 9,6 s de vídeo controlados pelo scroll, com o último fotograma antes da saída. -->
-    <section class="camera-story" id="experiencia" aria-labelledby="camera-title">
-      <div class="camera-stage">
-        <div class="camera-film">
-          <video id="camera-video" muted playsinline preload="auto" poster="assets/iphone18/camera-scroll-poster.webp" aria-label="Detalhe da abertura das lâminas da câmara do iPhone 18 Pro">
-            <source src="assets/iphone18/camera-scroll.mp4" type="video/mp4">
-          </video>
+    <nav class="model-rail" aria-label="Explorar modelos iPhone">
+      <a href="#produto-destaque" class="rail-item is-active"><img src="assets/iphone18/pro-duo.webp" alt="" width="64" height="68"><span><strong>iPhone 18 Pro</strong><small>Em destaque</small></span></a>
+      <a href="#catalogo" data-filter="17" class="rail-item"><img src="assets/iphone17.png" alt="" width="64" height="68"><span><strong>iPhone 17</strong><small>Explorar família</small></span></a>
+      <a href="#catalogo" data-filter="16" class="rail-item"><img src="assets/iphone16.jpg" alt="" width="64" height="68"><span><strong>iPhone 16</strong><small>Explorar família</small></span></a>
+      <a href="#catalogo" data-filter="fold" class="rail-item"><img src="assets/iphone18/cores/fold-branco.png" alt="" width="64" height="68"><span><strong>iPhone Fold</strong><small>Explorar família</small></span></a>
+      <a href="#audio" class="rail-item"><img src="assets/airpods-pro.jpeg" alt="" width="64" height="68"><span><strong>AirPods</strong><small>Descobrir</small></span></a>
+    </nav>
+
+    <section class="pdp-hero shell" id="produto-destaque" aria-labelledby="pdp-title">
+      <div class="pdp-gallery">
+        <div class="pdp-image-stage" id="pdp-image-stage">
+          <span class="pdp-image-caption">01 / 03 · iPhone 18 Pro</span>
+          <img id="pdp-image" src="assets/iphone18/pro-duo.webp" alt="iPhone 18 Pro em borgonha visto de frente e de trás" width="800" height="950" fetchpriority="high">
+          <span class="pdp-zoom-hint" aria-hidden="true">Explora cada detalhe ↗</span>
         </div>
-        <div class="camera-shade" aria-hidden="true"></div>
-        <div class="camera-opening">
-          <p class="eyebrow">UM OLHAR MAIS PERTO</p>
-          <h1 id="camera-title">iPhone 18 Pro.</h1>
-          <p>Abre uma nova perspetiva.</p>
+        <div class="pdp-thumbnails" role="group" aria-label="Imagens do iPhone 18 Pro">
+          <button class="pdp-thumb selected" type="button" data-gallery="0" aria-label="Ver iPhone 18 Pro de frente e de trás" aria-pressed="true"><img src="assets/iphone18/pro-duo.webp" alt="" width="72" height="72"></button>
+          <button class="pdp-thumb" type="button" data-gallery="1" aria-label="Ver detalhe das câmaras" aria-pressed="false"><img src="assets/iphone18-pro-detail.webp" alt="" width="72" height="72"></button>
+          <button class="pdp-thumb" type="button" data-gallery="2" aria-label="Ver os quatro acabamentos" aria-pressed="false"><img src="assets/iphone18/finishes.webp" alt="" width="72" height="72"></button>
         </div>
-        <div class="camera-ending" inert aria-hidden="true">
-          <p class="eyebrow">O PRÓXIMO CAPÍTULO É TEU</p>
-          <h2>Vê mais.<br>Sente cada detalhe.</h2>
-          <button class="button light" data-product="18pro">Explorar iPhone 18 Pro <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="pdp-config">
+        <p class="pdp-kicker">NOVO · GADGETX AFRICA</p>
+        <h1 id="pdp-title">iPhone 18 Pro<span>.</span></h1>
+        <p class="pdp-intro">Mais perto de tudo o que importa.</p>
+        <div class="pdp-availability"><span class="status-dot" aria-hidden="true"></span> Disponibilidade e preço sob consulta</div>
+        <div class="pdp-rule"></div>
+        <fieldset class="pdp-group" id="pdp-models">
+          <legend>Escolhe o modelo</legend>
+          <div class="pdp-model-options">
+            <button type="button" class="pdp-option selected" data-hero-model="18pro" aria-pressed="true"><strong>iPhone 18 Pro</strong><small>6,3 polegadas</small></button>
+            <button type="button" class="pdp-option" data-hero-model="18max" aria-pressed="false"><strong>iPhone 18 Pro Max</strong><small>6,9 polegadas</small></button>
+          </div>
+        </fieldset>
+        <fieldset class="pdp-group" id="pdp-colours">
+          <legend>Escolhe o acabamento <span id="pdp-colour-name">· Borgonha</span></legend>
+          <div class="pdp-swatches">
+            <button type="button" class="pdp-swatch selected" data-hero-colour="Borgonha" aria-label="Borgonha" aria-pressed="true" style="--swatch:#562d39"></button>
+            <button type="button" class="pdp-swatch" data-hero-colour="Preto" aria-label="Preto" aria-pressed="false" style="--swatch:#34363a"></button>
+            <button type="button" class="pdp-swatch" data-hero-colour="Prateado" aria-label="Prateado" aria-pressed="false" style="--swatch:#d8d9d6"></button>
+            <button type="button" class="pdp-swatch" data-hero-colour="Glacier" aria-label="Glacier" aria-pressed="false" style="--swatch:#b9c6d7"></button>
+          </div>
+          <p class="pdp-caption">As imagens apresentam a família e os acabamentos. Confirma a variante antes da compra.</p>
+        </fieldset>
+        <fieldset class="pdp-group" id="pdp-capacities">
+          <legend>Escolhe a capacidade</legend>
+          <div class="pdp-capacity-options">
+            <button type="button" class="pdp-capacity selected" data-hero-size="256 GB" aria-pressed="true">256 GB</button>
+            <button type="button" class="pdp-capacity" data-hero-size="512 GB" aria-pressed="false">512 GB</button>
+            <button type="button" class="pdp-capacity" data-hero-size="1 TB" aria-pressed="false">1 TB</button>
+          </div>
+        </fieldset>
+        <div class="pdp-buybox">
+          <div><strong>O teu iPhone, à tua escolha.</strong><p>Preço, cores e stock serão confirmados antes da abertura das vendas.</p></div>
+          <button type="button" class="button dark" id="pdp-add">Adicionar ao carrinho <span aria-hidden="true">↗</span></button>
+          <a href="https://wa.me/message/4E732CRQ5TRSF1" data-whatsapp target="_blank" rel="noopener noreferrer" class="pdp-assistance">Falar com a GadgetX no WhatsApp ↗</a>
         </div>
-        <div class="camera-toolbar">
-          <span class="camera-instruction">Desliza para explorar <span aria-hidden="true">↓</span></span>
-          <div class="camera-track" aria-hidden="true"><span></span></div>
-          <button type="button" id="camera-play" aria-pressed="false">Reproduzir vídeo</button>
-          <a href="#catalogo">Saltar introdução ↗</a>
-        </div>
-        <p class="camera-fallback" role="status" hidden>O vídeo não está disponível. Continua a descobrir a loja abaixo.</p>
       </div>
     </section>
 
+    <div class="purchase-dock" id="purchase-dock" aria-label="Resumo da seleção">
+      <div class="purchase-dock-inner shell">
+        <span class="dock-shipping">Da África do Sul para a tua porta <a href="#entregas">Ver entregas ↗</a></span>
+        <span class="dock-selection"><strong id="dock-model">iPhone 18 Pro</strong><small id="dock-variant">Borgonha · 256 GB · Preço por confirmar</small></span>
+        <button type="button" class="button dark" id="dock-add">Adicionar ao carrinho <span aria-hidden="true">↗</span></button>
+      </div>
+    </div>
     <div class="preview">PRÉ-VISUALIZAÇÃO <span>Catálogo em preparação · pagamentos desativados</span></div>
 
     <section class="intro shell">

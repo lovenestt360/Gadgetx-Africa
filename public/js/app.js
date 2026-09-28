@@ -447,7 +447,7 @@ registerReveals();
 const productGrid = $('#products');
 new MutationObserver(() => registerReveals(productGrid)).observe(productGrid, { childList: true });
 
-// A abertura cinematográfica é gerida por camera-story.js.
+// Os vídeos das Novidades são geridos por news-videos.js.
 
 // Botões "magnéticos" que seguem ligeiramente o ponteiro
 if (finePointer.matches) {

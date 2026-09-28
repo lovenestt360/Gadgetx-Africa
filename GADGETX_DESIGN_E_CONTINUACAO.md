@@ -1,5 +1,7 @@
 # GadgetX Africa — guia de design e continuação
 
+> Atualização de 28-09-2026: a página de produto e a remoção do vídeo controlado pelo scroll estão descritas em `docs/PRODUCT_PAGE_DESIGN.md`. Em caso de conflito, seguir esse documento.
+
 ## 1. Objetivo e estado atual
 Loja online GadgetX Africa para clientes de países africanos, com origem de mercadoria indicada pelo proprietário como África do Sul. A experiência prioriza a família iPhone 18 e apresenta também iPhone 17, iPhone 16 e categorias de acessórios. O idioma principal da interface é português.
 
